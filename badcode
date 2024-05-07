@@ -1,0 +1,280 @@
+<?php
+
+class LoginController extends Controller
+{
+    public function index() {
+        return view('auth.login');
+    }
+    
+    public function login(Request $request) {
+
+        if (Buyer::where('email', '=' , $request->email)->exists()) {
+            if (Auth::guard('buyer')->attempt(['email' => $request->email, 'password' => $request->password])) {
+                $cart = Cart::where('buyer_id', Auth::guard('buyer')->user()->id)->first();
+                if($cart != null) {
+                    $items = Cart_item::where('cart_id' , $cart->id)->get();
+                    $cart = session()->get('cart', []);
+                    foreach($items as $item) {
+                        $product = Product::findOrFail($item->product_id);
+                        $cart[$item->product_id] = [
+                            "id" => $product->id,
+                            "name" => $product->name,
+                            "price" => $product->price,
+                            "description" => $product->description,
+                            "category_id" => $product->category_id,
+                            "photo" => $product->photo,
+
+                        ];
+                    }
+                    session()->put('cart', $cart);
+                }
+
+                return redirect('/profile');
+            }
+        } elseif (Seller::where('email' , '=' , $request->email)->exists()) {
+            if (Auth::guard('seller')->attempt(['email' => $request->email, 'password' => $request->password])) {
+                $cart = Cart::where('seller_id', Auth::guard('seller')->user()->id)->first();
+                if($cart != null) {
+                    $items = Cart_item::where('cart_id' , $cart->id)->get();
+                    $cart = session()->get('cart', []);
+                    foreach($items as $item) {
+                        $product = Product::findOrFail($item->product_id);
+                        $cart[$item->product_id] = [
+                            "id" => $product->id,
+                            "name" => $product->name,
+                            "price" => $product->price,
+                            "description" => $product->description,
+                            "category_id" => $product->category_id,
+                            "photo" => $product->photo,
+
+                        ];
+                    }
+                    session()->put('cart', $cart);
+                }
+                return redirect('/seller');
+            }
+        } elseif (Admin::where('email' , '=' , $request->email)->exists()) {
+            if(Auth::guard('admin')->attempt(['email' => $request->email, 'password' => $request->password])) {;
+                $cart = Cart::where('admin_id', Auth::guard('admin')->user()->id)->first();
+                if($cart != null) {
+                    $items = Cart_item::where('cart_id' , $cart->id)->get();
+                    $cart = session()->get('cart', []);
+                    foreach($items as $item) {
+                        $product = Product::findOrFail($item->product_id);
+                        $cart[$item->product_id] = [
+                            "id" => $product->id,
+                            "name" => $product->name,
+                            "price" => $product->price,
+                            "description" => $product->description,
+                            "category_id" => $product->category_id,
+                            "photo" => $product->photo,
+
+                        ];
+                    }
+                    session()->put('cart', $cart);
+                }
+                return redirect()->intended('/admin/dashboard');
+            }
+        }
+        session()->flash('fail','incorect credintals');
+        return  redirect()->route('login');
+
+    }
+
+    public function logout(Request $request){
+        if(Auth::guard('seller')->check())
+        {
+            $products = Session('cart');
+            if($products == null)  {
+                $cart = Cart::where('seller_id', Auth::guard('seller')->user()->id)->first();
+                if($cart == null) {
+                    $c = new Cart;
+                    $c->seller_id = Auth::guard('seller')->user()->id;
+                    $c->state = 'none';
+                    $c->save();
+                }
+                Cart_item::where('cart_id',$cart->id)->delete();
+            }
+            
+            else {
+                $cart = Cart::where('seller_id', Auth::guard('seller')->user()->id)->first();
+                if($cart == null) {
+                    $c = new Cart;
+                    $c->seller_id = Auth::guard('seller')->user()->id;
+                    $c->state = 'none';
+                    $c->save();
+
+                    foreach($products as $product) {
+                        $cart_item = new Cart_item;
+                        $cart_item->cart_id = $c->id;
+                        $cart_item->product_id = $product['id'];
+                        $cart_item->price = $product['price'];
+                        $cart_item->save();
+                    }
+
+                } else {
+
+                    Cart_item::where('cart_id',$cart->id)->delete();
+                    
+                    foreach($products as $product) {
+                        $cart_item = new Cart_item;
+                        $cart_item->cart_id = $cart->id;
+                        $cart_item->product_id = $product['id'];
+                        $cart_item->price = $product['price'];
+                        $cart_item->save();
+                    }
+                };
+            } 
+            Auth::guard('seller')->logout();
+
+        }
+        if(Auth::guard('buyer')->check())
+        {
+            $products = Session('cart');
+            if($products == null)  {
+                $cart = Cart::where('buyer_id', Auth::guard('buyer')->user()->id)->first();
+                if($cart == null) {
+                    $c = new Cart;
+                    $c->buyer_id = Auth::guard('buyer')->user()->id;
+                    $c->state = 'none';
+                    $c->save();
+                }
+                Cart_item::where('cart_id',$cart->id)->delete();
+            }
+            
+            else {
+                $cart = Cart::where('buyer_id', Auth::guard('buyer')->user()->id)->first();
+                if($cart == null) {
+                    $c = new Cart;
+                    $c->buyer_id = Auth::guard('buyer')->user()->id;
+                    $c->state = 'none';
+                    $c->save();
+
+                    foreach($products as $product) {
+                        $cart_item = new Cart_item;
+                        $cart_item->cart_id = $c->id;
+                        $cart_item->product_id = $product['id'];
+                        $cart_item->price = $product['price'];
+                        $cart_item->save();
+                    }
+
+                } else {
+
+                    Cart_item::where('cart_id',$cart->id)->delete();
+                    
+                    foreach($products as $product) {
+                        $cart_item = new Cart_item;
+                        $cart_item->cart_id = $cart->id;
+                        $cart_item->product_id = $product['id'];
+                        $cart_item->price = $product['price'];
+                        $cart_item->save();
+                    }
+                };
+            } 
+            Auth::guard('buyer')->logout();
+
+        }
+        if(Auth::guard('admin')->check())
+        {
+
+            $products = Session('cart');
+            if($products == null)  {
+                $cart = Cart::where('admin_id', Auth::guard('admin')->user()->id)->first();
+                if($cart == null) {
+                    $c = new Cart;
+                    $c->admin_id = Auth::guard('admin')->user()->id;
+                    $c->state = 'none';
+                    $c->save();
+                }
+                Cart_item::where('cart_id',$cart->id)->delete();
+            }
+            
+            else {
+                $cart = Cart::where('admin_id', Auth::guard('admin')->user()->id)->first();
+                if($cart == null) {
+                    $c = new Cart;
+                    $c->admin_id = Auth::guard('admin')->user()->id;
+                    $c->state = 'none';
+                    $c->save();
+
+                    foreach($products as $product) {
+                        $cart_item = new Cart_item;
+                        $cart_item->cart_id = $c->id;
+                        $cart_item->product_id = $product['id'];
+                        $cart_item->price = $product['price'];
+                        $cart_item->save();
+                    }
+
+                } else {
+
+                    Cart_item::where('cart_id',$cart->id)->delete();
+                    
+                    foreach($products as $product) {
+                        $cart_item = new Cart_item;
+                        $cart_item->cart_id = $cart->id;
+                        $cart_item->product_id = $product['id'];
+                        $cart_item->price = $product['price'];
+                        $cart_item->save();
+                    }
+                };
+            } 
+            Auth::guard('admin')->logout();
+        }
+        $request->session()->forget('cart');
+
+
+       return redirect('/');
+    }
+}
+
+
+
+/////////////////////////////////////////////////
+
+
+class RegisterController extends Controller
+{
+    public function index() {
+        return view('auth.register');
+    }
+
+    public function register(Request $request) {
+        
+        switch($request->get('type')) {
+            case '1' :
+                $attribuets = $request->validate([
+                    'email' => "",
+                    'password' => "",
+                    'name' => '',
+                    'username' => '',
+                    'photo' => '',
+                ]);
+                $attribuets['password'] = Hash::make($attribuets['password']);
+                if(array_key_exists('photo',$attribuets))
+                    $attribuets['photo'] = $request->file('photo')->store('/profileImage');
+                Buyer::create($attribuets);
+                Auth::guard('buyer')->attempt(['email' => $attribuets['email'], 'password' =>  $attribuets['password']]);
+                return redirect('/profile');
+                break;
+            case '2' :
+                $attribuets = $request->validate([
+                    'email' => "",
+                    'password' => "",
+                    'name' => '',
+                    'username' => '',
+                    'photo' => '',
+                ]);
+                $attribuets['password'] = Hash::make($attribuets['password']);
+                if(array_key_exists('photo',$attribuets))
+                    $attribuets['photo'] = $request->file('photo')->store('/profileImage');
+                Seller::create($attribuets);
+                Auth::guard('seller')->attempt(['email' => $attribuets['email'], 'password' =>  $attribuets['password']]);
+                
+                return redirect('/seller');
+                break;
+            default: 
+                session()->flash('fail','incorect credintals');
+                return  redirect("/register");
+        }
+    }
+}
