@@ -1,6 +1,12 @@
 @extends('admin.layout.main')
 @section('content')
     <!-- Sale & Revenue Start -->
+    @php 
+        foreach($statistics as $key => $value) {
+            echo $key . ' => ' . $value . '<br>';
+        };
+    @endphp
+
     <div class="container-fluid pt-4 px-4">
         <div class="row g-4">
             <div class="col-sm-6 col-xl-3">

@@ -8,13 +8,14 @@ use App\Models\Wish;
 use App\Models\Order;
 use App\Models\UserInfo;
 use App\Models\Transaction;
+use App\Models\Product_review;
 use Laravel\Sanctum\HasApiTokens;
 use Illuminate\Notifications\Notifiable;
-use Illuminate\Database\Eloquent\Relations\HasOne;
-use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\SoftDeletes;
+use Illuminate\Database\Eloquent\Relations\HasOne;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 
 class Buyer extends Authenticatable
@@ -76,6 +77,10 @@ class Buyer extends Authenticatable
     public function wish(): HasOne 
     {
         return $this->hasOne(Wish::class);
+    }
+    public function reviews(): HasMany
+    {
+        return $this->hasMany(Product_review::class);
     }
 
 }

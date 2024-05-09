@@ -13,11 +13,11 @@ Route::prefix('/seller')->group(function() {
     Route::get('/product/{id}',[SellerProductController::class,'show']);
     Route::get('/product',[SellerProductController::class,'create']);
     Route::post('/product',[SellerProductController::class,'store']);
-    Route::get('/product/{id}/edit',[SellerProductController::class,'edit']);
-    Route::put('/product/{id}',[SellerProductController::class,'update']);
-    Route::delete('/product/{id}',[SellerProductController::class,'destroy']);
+    Route::get('/product/{product}/edit',[SellerProductController::class,'edit']);
+    Route::put('/product/{product}',[SellerProductController::class,'update']);
+    Route::delete('/product/{product}',[SellerProductController::class,'destroy']);
 
     Route::get('/orders',[SellerOrderController::class,'index']);
-    Route::get('/orders/send/{item}',[SellerOrderController::class,'send']);
+    Route::get('/orders/send/{item}/{amount}',[SellerOrderController::class,'send']);
 
 });

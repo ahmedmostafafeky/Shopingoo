@@ -35,10 +35,10 @@ class SellerOrderController extends Controller
         ]);
     }
 
-    public function send(Order_item $item) {
+    public function send(Order_item $item, string $amount) {
         $item->state = 'sent';
         $item->save();
-        $item->product->amount--;
+        $item->product->amount -= $amount;
         $item->product->save();
         return back();
     }

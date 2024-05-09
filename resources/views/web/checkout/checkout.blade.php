@@ -25,6 +25,7 @@
                         <p>City: {{$bill['city']}} , Country: {{$bill['country']}}</p>
                         <p>Address: {{$bill['address']}}</p>
                         <p>ZIP Code: {{$bill['zip_code']}}</p>
+                        <p>PaymentType: {{$bill->order->transaction->mode}}</p>
                     </div>
                 </div>
                 <!-- invoice body-->

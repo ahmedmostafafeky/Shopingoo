@@ -25,8 +25,7 @@ class Bill extends Model
         'delivary_cost'
     ];
 
-
-    public function order() : BelongTo {
-        return $this->belongTo(Order::class);
+    public function order() : BelongsTo {
+        return $this->belongsTo(Order::class);
     }
 }

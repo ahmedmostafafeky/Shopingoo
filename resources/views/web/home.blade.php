@@ -140,7 +140,7 @@
                                 <a href="{{ route('add_to_cart', $product->id) }}"><i class="bi bi-basket3"></i></a>
                                 
                             </div>
-                            <a href="product-details.html">
+                            <a href="/shop/product/details/{{$product->id}}">
                                 <img src="{{asset('storage/'.$product->photo)}}" class="card-img-top" alt="...">
                             </a>
                         </div>

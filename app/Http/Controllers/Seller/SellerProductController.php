@@ -21,7 +21,9 @@ class SellerProductController extends Controller
     }
 
     public function show() {
-        return view('web.seller-account.products.show');
+        return view('web.seller-account.products.show',[
+            'product' => $product
+        ]);
     }
 
     public function create() {
@@ -52,16 +54,34 @@ class SellerProductController extends Controller
         return back();
     }
 
-    public function edit() {
-        return view('web.seller-account.products.edit');
+    public function edit(Product $product) {
+        return view('web.seller-account.products.edit',[
+            'product' => $product
+        ]);
     }
 
-    public function update() {
-        dd('update');
+    public function update(Product $product , Request $request) {
+        $attribuets = $request->validate([
+            "name" => "",
+            "description" => "",
+            "price" => "",
+            "cost" => "",
+            "photo",
+            "amount" => "",
+        ]);
+
+        if(array_key_exists('photo',$attribuets))
+            $attribuets['photo'] = $request->file('photo')->store('/products');
+
+        $product->update($attribuets);
+        return back()->with('sucsess','updated successfuly');
+
     }
 
-    public function destroy() {
-        dd('test delete');
+    public function destroy(Product $product ) {
+      
+       $product->delete();
+       return back()->with('sucsess','deleted successfuly');
     }
 
 }

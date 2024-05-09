@@ -3,9 +3,11 @@
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\Buyer\WishController;
 use App\Http\Controllers\Guest\CartController;
+use App\Http\Controllers\Admin\ProductController;
 use App\Http\Controllers\Buyer\Checkout\Checkout;
 use App\Http\Controllers\Buyer\ProfileController;
 use App\Http\Controllers\Buyer\Checkout\BillController;
+use App\Http\Controllers\Buyer\ProductReviewController;
 use App\Http\Controllers\Buyer\Checkout\StripeController;
 use App\Http\Controllers\Buyer\Checkout\PaymentController;
 
@@ -53,6 +55,7 @@ use App\Http\Controllers\Buyer\Checkout\PaymentController;
         Route::post('/wish/move',[WishController::class,'moveToCart']);  
 
         Route::post('/cart/move', [CartController::class,'moveToWish']);
+        Route::post('/product/add/review/{product}',[ProductReviewController::class, 'addReview']);
     });
 
 

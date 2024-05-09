@@ -7,6 +7,7 @@ use App\Http\Controllers\Guest\HomeController;
 use App\Http\Controllers\Guest\SearchController;
 use App\Http\Controllers\Auth\RegisterController;
 use App\Http\Controllers\Auth\AdminAuthController;
+use App\Http\Controllers\Buyer\ShopProductController;
 use App\Http\Controllers\Guest\CategoryGuestController;
 
 Route::get('/',[HomeController::class,'index'])->name('home');
@@ -25,8 +26,7 @@ Route::prefix('blog')->group( function () {
 Route::prefix('/shop')->group(function() {
 
     Route::get('/cart', [CartController::class,'index']);
-
-    Route::view('/product', 'web.shop.product-details');
+    Route::get('/product/details/{product}', [ShopProductController::Class, 'index']);
 
 });
 

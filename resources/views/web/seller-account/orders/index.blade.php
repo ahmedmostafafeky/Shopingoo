@@ -38,7 +38,7 @@
 
                                 @if($product->state == 'confirmed')
                                     <td>
-                                        <a class="btn btn-info m-2"  href="/seller/orders/send/{{$product->id}}">Send</a>
+                                        <a class="btn btn-info m-2"  href="/seller/orders/send/{{$product->id}}/{{$product->amount}}">Send</a>
                                     </td>
                                 @else
                                     <td>
